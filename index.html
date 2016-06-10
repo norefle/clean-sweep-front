@@ -1,0 +1,266 @@
+<html>
+<head>
+<meta charset="UTF-8" />
+<style type="text/css">
+body {
+    background-color: #2b2b2b;
+    color: #cccccc;
+    margin-left: 250;
+    margin-right: 250;
+    font-family: helvetica;
+}
+input {
+    margin-right: 10;
+}
+h2 {
+    color: #d57c33;
+}
+span {
+    color: #cccccc;
+}
+.folder {
+    cursor: hand;
+}
+button {
+    background-color: #2b2b2b;
+    color: #cccccc;
+    border: 1px solid #cccccc;
+    border-radius: 4px;
+    padding: 15px;
+}
+.disclaimer {
+    padding: 5px;
+    margin-top: 10px;
+    font-size: x-small;
+    text-align: right;
+}
+.disclaimer a {
+    color: #cccccc;
+}
+</style>
+<script type="text/javascript">
+    var scores = {
+        physical: 0,
+        health: 0,
+        money: 0,
+        relationship: 0,
+    };
+    var total = 0;
+
+    function save() {
+        var traverse = function(output, prefix) {
+            for (var i = 0; i < 25; ++i) {
+                var obj = document.getElementById(prefix + i);
+                if (!!obj) {
+                    output[prefix + i] = !!obj.checked;
+                }
+            }
+
+        }
+
+        var object = {}
+        traverse(object, "physical_");
+        traverse(object, "health_");
+        traverse(object, "money_");
+        traverse(object, "relationship_");
+
+        localStorage.setItem("status", JSON.stringify(object));
+    }
+
+    function load() {
+        var object = JSON.parse(localStorage.getItem("status") || {});
+        for (var key in object) {
+            var checked = !!object[key];
+            var item = document.getElementById(key);
+            if (checked && !!item) {
+                item.checked = checked;
+                var score = key.replace(/_\d+/, "");
+                if (typeof scores[score] !== "undefined") {
+                    scores[score] += 1;
+                    update(score, scores[score]);
+                }
+            }
+        }
+        total = calcTotal();
+        update("total", total);
+    }
+
+    function check(name, obj) {
+        var value = obj.checked ? 1 : -1;
+        if (typeof scores[name] !== "undefined") {
+            scores[name] += value;
+            var span = document.getElementById(name);
+            if (!!span) {
+                span.innerHTML = scores[name];
+            }
+        }
+        total = calcTotal();
+        update("total", total);
+    }
+
+    function calcTotal() {
+        var sum = 0;
+        for (var score in scores) {
+            sum += scores[score];
+        }
+        return sum;
+    }
+
+    function update(name, value) {
+        var total = document.getElementById(name)
+        if (!!total) {
+            total.innerHTML = value;
+        }
+    }
+
+    function fold(name, obj) {
+        var area = document.getElementById(name);
+        if (!!area) {
+            area.hidden = !area.hidden;
+        }
+    }
+</script>
+</head>
+<body onload="load()">
+
+<div><h2 class="folder" onclick="fold('physicalArea', this)">Физическая Среда</h2></div>
+<div id="physicalArea">
+
+<input type="checkbox" id="physical_0" onclick="check('physical', this)" />Мои личные файлы, бумаги и чеки аккуратно собраны и организованы.<br />
+<input type="checkbox" id="physical_1" onclick="check('physical', this)" />Моя машина в великолепном состоянии. (Не нуждается в ремонте, чистке или замене)<br />
+<input type="checkbox" id="physical_2" onclick="check('physical', this)" />Мой дом чист и опрятен. (Пропылесосен, вещи в шкафах и на полках организованы, столы убраны, мебель в хорошем состоянии, окна чисты).<br />
+<input type="checkbox" id="physical_3" onclick="check('physical', this)" />Мои устройства и мое оборудование работают хорошо. (Холодильник, плита, hi-fi и т.д.)<br />
+<input type="checkbox" id="physical_4" onclick="check('physical', this)" />Моя одежда выглажена, чистая и помогает мне выглядеть хорошо. (Не мята, нет кучи вещей ждущей стирки, одежда не порвана, современна или подходит по размеру).<br />
+<input type="checkbox" id="physical_5" onclick="check('physical', this)" />Мои растения и животные здоровые. (Накормлены, политы, получают достаточно света и любви).<br />
+<input type="checkbox" id="physical_6" onclick="check('physical', this)" />Моя кровать/спальня позволяют мне высыпаться наилучшим образом. (Упругая кровать, свет, воздух).<br />
+<input type="checkbox" id="physical_7" onclick="check('physical', this)" />Я живу в доме/квартире, которая мне нравится.<br />
+<input type="checkbox" id="physical_8" onclick="check('physical', this)" />Я окружаю себя красивыми вещами.<br />
+<input type="checkbox" id="physical_9" onclick="check('physical', this)" />Я живу в географической местности, которую я выбрал.<br />
+<input type="checkbox" id="physical_10" onclick="check('physical', this)" />Освещение вокруг меня достаточное и здоровое.<br />
+<input type="checkbox" id="physical_11" onclick="check('physical', this)" />Я на постоянной основе имею достаточно времени, пространства и свободы в моей жизни.<br />
+<input type="checkbox" id="physical_12" onclick="check('physical', this)" />Ничто в моей окружающей среде не приносит мне вреда.<br />
+<input type="checkbox" id="physical_13" onclick="check('physical', this)" />Я не отношусь толерантно ни к чему в моем доме или окружающей среде.<br />
+<input type="checkbox" id="physical_14" onclick="check('physical', this)" />Моя окружающая среда на работе продуктивная и вдохновляющая. (Поддерживающая, достаточно инструментов и ресурсов, нет давления).<br />
+<input type="checkbox" id="physical_15" onclick="check('physical', this)" />Мой компьютер работает очень хорошо и полностью поддерживает мои старания.<br />
+<input type="checkbox" id="physical_16" onclick="check('physical', this)" />Мои волосы в состоянии, которое мне нравится.<br />
+<input type="checkbox" id="physical_17" onclick="check('physical', this)" />Я создают резервную копию моих файлов раз в месяц.<br />
+<input type="checkbox" id="physical_18" onclick="check('physical', this)" />Я окружаю себя музыкой, которая делает мою жизнь более приятной.<br />
+<input type="checkbox" id="physical_19" onclick="check('physical', this)" />Я застилаю кровать каждый день.<br />
+<input type="checkbox" id="physical_20" onclick="check('physical', this)" />Я не приношу себе вреда, падаю или сталкиваюсь с предметами.<br />
+<input type="checkbox" id="physical_21" onclick="check('physical', this)" />Люди чувствуют себя комфортно в моем доме.<br />
+<input type="checkbox" id="physical_22" onclick="check('physical', this)" />Я пью, по крайней мере, 2 литра воды в день.<br />
+<input type="checkbox" id="physical_23" onclick="check('physical', this)" />У меня нет ничего в доме, что мне не нужно.<br />
+<input type="checkbox" id="physical_24" onclick="check('physical', this)" />Я постоянно все делаю либо раньше, либо вовремя.<br />
+
+</div>
+<div><h4>Общий счет твоей физической среды: <span id="physical">0</span></h4></div>
+
+<div><h2 class="folder" onclick="fold('healthArea', this)">Здоровье</h2></div>
+<div id="healthArea" hidden>
+
+<input type="checkbox" id="health_0" onclick="check('health', this)" />Я редко употребляю кофеин (Шоколад, кофе, кола, чай) реже трех раз в день.<br />
+<input type="checkbox" id="health_1" onclick="check('health', this)" />Я редко употребляю сахар (Реже трех раз в день).<br />
+<input type="checkbox" id="health_2" onclick="check('health', this)" />Я редко смотрю телевизор (меньше 5 часов в неделю).<br />
+<input type="checkbox" id="health_3" onclick="check('health', this)" />Я редко употребляю алкоголь (Менее двух напитков в неделю).<br />
+<input type="checkbox" id="health_4" onclick="check('health', this)" />Мои зубы и десны здоровые (Посещал дантиста в течение последних 6 месяцев).<br />
+<input type="checkbox" id="health_5" onclick="check('health', this)" />Холестерин в моей крови на здоровом уровне.<br />
+<input type="checkbox" id="health_6" onclick="check('health', this)" />Мое кровяное давление на здоровом уровне.<br />
+<input type="checkbox" id="health_7" onclick="check('health', this)" />Я прошел полное обследование организма за последние три года.<br />
+<input type="checkbox" id="health_8" onclick="check('health', this)" />Я не курю ни табак, ни какие другие вещества.<br />
+<input type="checkbox" id="health_9" onclick="check('health', this)" />Я не принимаю наркотики и не злоупотребляю медикаментами.<br />
+<input type="checkbox" id="health_10" onclick="check('health', this)" />Я прошел полную проверку зрения за последние два года. (Проверка на глаукому, проверка зоркости).<br />
+<input type="checkbox" id="health_11" onclick="check('health', this)" />Мой вес в идеальных пределах.<br />
+<input type="checkbox" id="health_12" onclick="check('health', this)" />Мои ногти здоровы и хорошо выглядят.<br />
+<input type="checkbox" id="health_13" onclick="check('health', this)" />Я не спешу и не использую адреналин для выполнения работы.<br />
+<input type="checkbox" id="health_14" onclick="check('health', this)" />У меня стоящая жизнь за пределами работы или профессии.<br />
+<input type="checkbox" id="health_15" onclick="check('health', this)" />Я редко пропускаю работу по болезни.<br />
+<input type="checkbox" id="health_16" onclick="check('health', this)" />У меня нет неприемлемых для меня привычек.<br />
+<input type="checkbox" id="health_17" onclick="check('health', this)" />Я знаю все мои физические и эмоциональные проблемы или состояния, и я полностью о них забочусь.<br />
+<input type="checkbox" id="health_18" onclick="check('health', this)" />Я постоянно отдыхаю вечерами, на выходных и на праздниках и беру отпуск, по крайней мере, на три недели в году.<br />
+<input type="checkbox" id="health_19" onclick="check('health', this)" />Я сплю достаточно.<br />
+<input type="checkbox" id="health_20" onclick="check('health', this)" />Я пользуюсь хорошими очками.<br />
+<input type="checkbox" id="health_21" onclick="check('health', this)" />Я не страдаю.<br />
+<input type="checkbox" id="health_22" onclick="check('health', this)" />Я громко смеюсь каждый день.<br />
+<input type="checkbox" id="health_23" onclick="check('health', this)" />Я хожу или физически упражняюсь, по крайней мере, три раза в неделю.<br />
+<input type="checkbox" id="health_24" onclick="check('health', this)" />Я хорошо слышу и защищаю себя от громкого шума, концертов, музыки.<br />
+
+</div>
+<div><h4>Общий счет твоего здоровья: <span id="health">0</span></h4></div>
+
+<div><h2 class="folder" onclick="fold('moneyArea', this)">Деньги</h2></div>
+<div id="moneyArea" hidden>
+
+<input type="checkbox" id="money_0" onclick="check('money', this)" />В настоящее время я откладываю, по крайней мере, 10% от моего дохода.<br />
+<input type="checkbox" id="money_1" onclick="check('money', this)" />Я плачу по счетам вовремя.<br />
+<input type="checkbox" id="money_2" onclick="check('money', this)" />Источник моего дохода стабилен и предсказуем.<br />
+<input type="checkbox" id="money_3" onclick="check('money', this)" />Я знаю, сколько мне нужно денег для минимальной финансовой независимости и у меня есть план как этого достичь.<br />
+<input type="checkbox" id="money_4" onclick="check('money', this)" />Я вернул или разрешил вопрос по поводу всех денег, которые я одолжил.<br />
+<input type="checkbox" id="money_5" onclick="check('money', this)" />Я заключил договоренности и держу под контролем все выплаты частным лицам или компаниям, которым я должен деньги.<br />
+<input type="checkbox" id="money_6" onclick="check('money', this)" />У меня есть в резерве сумма, которой хватит на 6 месяцев.<br />
+<input type="checkbox" id="money_7" onclick="check('money', this)" />Мой недельный бюджет позволяет мне копить и в то же время не страдать.<br />
+<input type="checkbox" id="money_8" onclick="check('money', this)" />Все мои чеки и счета аккуратно хранятся и все мои налоги оплачены.<br />
+<input type="checkbox" id="money_9" onclick="check('money', this)" />В настоящее время я живу хорошо, насколько это возможно.<br />
+<input type="checkbox" id="money_10" onclick="check('money', this)" />У меня отличная личная страховка. (Жизни, от несчастных случаев, медицинская и т.д.).<br />
+<input type="checkbox" id="money_11" onclick="check('money', this)" />Мои вещи (машина, дом, владения, драгоценности) хорошо застрахованы.<br />
+<input type="checkbox" id="money_12" onclick="check('money', this)" />У меня есть финансовый план на следующий год.<br />
+<input type="checkbox" id="money_13" onclick="check('money', this)" />Надо мной не висят ни какие тучи закона.<br />
+<input type="checkbox" id="money_14" onclick="check('money', this)" />Мое завещание соответствует современным требованиям и является точным.<br />
+<input type="checkbox" id="money_15" onclick="check('money', this)" />Все штрафы, алименты оплачены и под контролем.<br />
+<input type="checkbox" id="money_16" onclick="check('money', this)" />Мои инвестиции не забирают мой сон.<br />
+<input type="checkbox" id="money_17" onclick="check('money', this)" />Я знаю какова моя стоимость.<br />
+<input type="checkbox" id="money_18" onclick="check('money', this)" />Я на карьерном / профессиональном / деловом пути, который является прибыльным финансово и морально или в скором времени станет таковым.<br />
+<input type="checkbox" id="money_19" onclick="check('money', this)" />Мой заработок сопоставим с силами, которые я вкладываю в работу.<br />
+<input type="checkbox" id="money_20" onclick="check('money', this)" />У меня нет незавершенных «хвостов» на работе.<br />
+<input type="checkbox" id="money_21" onclick="check('money', this)" />У меня есть отношения с людьми, которые могут помочь мне в моей карьере/профессиональном развитии.<br />
+<input type="checkbox" id="money_22" onclick="check('money', this)" />Мне есть, что ждать с нетерпением почти каждый день.<br />
+<input type="checkbox" id="money_23" onclick="check('money', this)" />Я откладываю ежемесячно достаточно денег для достижения финансовой независимости.<br />
+<input type="checkbox" id="money_24" onclick="check('money', this)" />Мои сбережения постоянно обгоняют инфляцию.<br />
+
+</div>
+<div><h4>Общий счет твоих денег: <span id="money">0</span></h4></div>
+</div>
+
+<div><h2 class="folder" onclick="fold('relationshipArea', this)">Отношения</h2></div>
+<div id="relationshipArea" hidden>
+
+<input type="checkbox" id="relationship_0" onclick="check('relationship', this)" />За последние 3 месяца я сказал родителям, что я их люблю.<br />
+<input type="checkbox" id="relationship_1" onclick="check('relationship', this)" />Я хорошо нахожу общий язык с близкими родственниками.<br />
+<input type="checkbox" id="relationship_2" onclick="check('relationship', this)" />Я хорошо нахожу общий язык с моими коллегами / клиентами.<br />
+<input type="checkbox" id="relationship_3" onclick="check('relationship', this)" />Я хорошо нахожу общий язык с моим руководством.<br />
+<input type="checkbox" id="relationship_4" onclick="check('relationship', this)" />Нет никого, кого я опасаюсь или почувствовал бы себя некомфортабельно столкнувшись с ним/ней на улице, в аэропорту или на вечеринке.<br />
+<input type="checkbox" id="relationship_5" onclick="check('relationship', this)" />Я ставлю людей на первое место, а результаты на второе.<br />
+<input type="checkbox" id="relationship_6" onclick="check('relationship', this)" />Я отпустил все отношения, которые меня отягощали или вредили мне. ("отпустил" обозначает закончил, ушел, объявил завершенными, более не привязан).<br />
+<input type="checkbox" id="relationship_7" onclick="check('relationship', this)" />Я пообщался или пробовал пообщаться с теми, кому я принес боль, повредил или серьезно расстроил, даже если это была не полностью моя вина.<br />
+<input type="checkbox" id="relationship_8" onclick="check('relationship', this)" />Я не сплетничаю и не говорю за спиной о других.<br />
+<input type="checkbox" id="relationship_9" onclick="check('relationship', this)" />У меня есть круг друзей/семьи, которые принимают меня таким, какой я есть, а не за то, что я для них делаю.<br />
+<input type="checkbox" id="relationship_10" onclick="check('relationship', this)" />Я говорю людям как они могут удовлетворить меня.<br />
+<input type="checkbox" id="relationship_11" onclick="check('relationship', this)" />Я полностью держу руку на пульсе по поводу всех звонков и переписок.<br />
+<input type="checkbox" id="relationship_12" onclick="check('relationship', this)" />Я всегда говорю правду, во что бы то ни стало.<br />
+<input type="checkbox" id="relationship_13" onclick="check('relationship', this)" />Я получаю достаточно любви от людей, чтобы чувствовать себя хорошо.<br />
+<input type="checkbox" id="relationship_14" onclick="check('relationship', this)" />Я полностью простил тех людей, которые причинили мне боль/повредили мне специально или нет.<br />
+<input type="checkbox" id="relationship_15" onclick="check('relationship', this)" />Я человек слова, на меня можно положиться.<br />
+<input type="checkbox" id="relationship_16" onclick="check('relationship', this)" />Я быстро исправляю сбои в общении или понимании когда они происходят.<br />
+<input type="checkbox" id="relationship_17" onclick="check('relationship', this)" />Я живу по своим правилам, а не на условиях или предпочтениях других.<br />
+<input type="checkbox" id="relationship_18" onclick="check('relationship', this)" />Я закрыл все вопросы с прошлыми романтическими отношениями.<br />
+<input type="checkbox" id="relationship_19" onclick="check('relationship', this)" />Я знаю мои желания/нужды и забочусь о них.<br />
+<input type="checkbox" id="relationship_20" onclick="check('relationship', this)" />Я не сужу и не критикую других.<br />
+<input type="checkbox" id="relationship_21" onclick="check('relationship', this)" />Я не принимаю лично то, что мне говорят люди.<br />
+<input type="checkbox" id="relationship_22" onclick="check('relationship', this)" />У меня есть лучший друг или родная душа.<br />
+<input type="checkbox" id="relationship_23" onclick="check('relationship', this)" />Я делаю просьбы, а не жалуюсь.<br />
+<input type="checkbox" id="relationship_24" onclick="check('relationship', this)" />Я провожу время с людьми, которые не пытаются меня изменить.<br />
+
+</div>
+<div><h4>Общий счет твоих отношений: <span id="relationship">0</span></h4></div>
+</div>
+
+<div><h2>Всего во всех разделах: <span id="total">0</span></h2></div>
+
+<button type="button" onclick="save()">Сохранить</button>
+
+<div class="disclaimer">
+<a href="http://www.jobs.ua/coffee-break/coaching/advices/130/">Перевод</a> |
+<a href="http://betterme.org/cleansweep.html">Оригинал</a>.
+</div>
+
+</body>
+</html>
